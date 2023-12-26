@@ -1,64 +1,213 @@
-# Boris
+# Principles of writing consistent, idiomatic HTML
 
-A tiny, but robust REPL for PHP.
+![unmaintained](http://img.shields.io/badge/status-unmaintained-red.png)
 
-[![Code Climate](https://codeclimate.com/github/borisrepl/boris/badges/gpa.svg)](https://codeclimate.com/github/borisrepl/boris)
-[![Build Status](https://travis-ci.org/borisrepl/boris.svg?branch=master)](https://travis-ci.org/borisrepl/boris)
+The following document outlines a reasonable style guide for HTML development.
+These guidelines strongly encourage the use of existing, common, sensible
+patterns. They should be adapted as needed to create your own style guide.
 
-
-> **Announcement:** I'm looking to add one or two additional collaborators with
-> commit access. If you are actively involved in open source and have a GitHub
-> profile for review, ping me on Twitter (@d11wtq) to express your interest.
-> Experienced developers with active GitHub projects only.
-
-![Demo](http://dl.dropbox.com/u/508607/BorisDemo-v4.gif "Quick Demo")
-
-Python has one. Ruby has one. Clojure has one. Now PHP has one, too. Boris is
-PHP's missing REPL (read-eval-print loop), allowing developers to experiment
-with PHP code in the terminal in an interactive manner.  If you make a mistake,
-it doesn't matter, Boris will report the error and stand to attention for
-further input.
-
-Everything you enter into Boris is evaluated and the result inspected so you
-can understand what is happening.  State is maintained between inputs, allowing
-you to gradually build up a solution to a problem.
-
-> __Note:__ The PCNTL function which is required to run Boris is not available on Windows platforms.
-
-## Why?
-
-I'm in the process of transitioning away from PHP to Ruby.  I have come to find
-PHP's lack of a real REPL to be frustrating and was not able to find an existing
-implementation that was complete.  Boris weighs in at a few hundred lines of
-fairly straightforward code.
+This is a living document and new ideas are always welcome. Please
+contribute.
 
 
-## Usage
+## Table of contents
 
-Check out our wonderful [wiki] for usage instructions.
+1. [General principles](#general-principles)
+2. [Whitespace](#whitespace)
+3. [Format](#format)
+4. [Attribute order](#attribute-order)
+5. [Naming](#naming)
+6. [Practical example](#example)
+
+[License](#license)
 
 
-## Contributing
+<a name="general-principles"></a>
+## 1. General principles
 
-We're committed to a loosely-coupled architecture for Boris and would love to get your contributions.
+* All code in any code-base should look like a single person typed it, no
+  matter how many people contributed.
+* Strictly enforce the agreed upon style.
+* If in doubt when deciding upon a style, use existing, common patterns.
 
-Before jumping in, check out our **[Contributing] [contributing]** page on the wiki!
 
-## Contributing
+<a name="whitespace"></a>
+## 2. Whitespace
 
-We're using [PHPUnit](https://phpunit.de/) for testing. To run all the tests,
+Only one style should exist across the entire source of your code-base. Always
+be consistent in your use of whitespace. Use whitespace to improve
+readability.
 
-    phpunit --bootstrap tests/autoload.php -c tests.xml
+* Never mix spaces and tabs for indentation.
+* Choose between soft indents (spaces) or real tabs. Stick to your choice
+  without fail. (Preference: spaces)
+* If using spaces, choose the number of characters used per indentation level.
+  (Preference: 4 spaces)
 
-## Core Team
+Tip: configure your editor to "show invisibles". This will allow you to
+eliminate end of line whitespace, eliminate unintended blank line whitespace,
+and avoid polluting commits.
 
-This module was originally developed by [Chris Corbyn](https://github.com/d11wtq), and is now maintained by [Tejas Manohar](https://github.com/tejasmanohar), [Dennis Hotson](https://github.com/dhotson), and [other wonderful contributors](https://github.com/borisrepl/boris/graphs/contributors).
 
-## Copyright & Licensing
+<a name="format"></a>
+## 3. Format
 
-See the [LICENSE] file for details.
+* Always use lowercase tag and attribute names.
+* Write one discrete element per line.
+* Use one additional level of indentation for each nested element.
+* Use valueless boolean attributes (e.g. `checked` rather than
+  `checked="checked"`).
+* Always use double quotes to quote attribute values.
+* Omit the `type` attributes from `link` stylesheet, `style` and `script`
+  elements.
+* Always include closing tags.
+* Don't include a trailing slash in self-closing elements.
 
-[LICENSE]: https://github.com/borisrepl/boris/blob/master/LICENSE
-[wiki]: https://github.com/borisrepl/boris/wiki
-[contributing]: https://github.com/borisrepl/boris/blob/master/CONTRIBUTING.md
-[Chris Corbyn]: https://github.com/borisrepl
+(Keep line-length to a sensible maximum, e.g., 80 columns.)
+
+Example:
+
+```html
+<div class="tweet">
+    <a href="path/to/somewhere">
+        <img src="path/to/image.png" alt="">
+    </a>
+    <p>[tweet text]</p>
+    <button disabled>Reply</button>
+</div>
+```
+
+### Exceptions and slight deviations
+
+Elements with multiple attributes can have attributes arranged across multiple
+lines in an effort to improve readability and produce more useful diffs.
+
+Example:
+
+```html
+<a class="[value]"
+ data-action="[value]"
+ data-id="[value]"
+ href="[url]">
+    <span>[text]</span>
+</a>
+```
+
+
+<a name="attribute-order"></a>
+## 4. Attribute order
+
+HTML attributes should be listed in an order that reflects the fact that class
+names are the primary interface through which CSS and JavaScript select
+elements.
+
+1. `class`
+2. `id`
+3. `data-*`
+4. Everything else
+
+Example:
+
+````html
+<a class="[value]" id="[value]" data-name="[value]" href="[url]">[text]</a>
+````
+
+
+<a name="naming"></a>
+## 5. Naming
+
+Naming is hard, but very important. It's a crucial part of the process of
+developing a maintainable code base, and ensuring that you have a relatively
+scalable interface between your HTML and CSS/JS.
+
+* Use clear, thoughtful, and appropriate names for HTML classes. The names
+  should be informative both within HTML and CSS files.
+* Avoid _systematic_ use of abbreviated class names. Don't make things
+  difficult to understand.
+
+Example with bad names:
+
+```html
+<div class="cb s-scr"></div>
+```
+
+```css
+.s-scr {
+  overflow: auto;
+}
+
+.cb {
+  background: #000;
+}
+```
+
+Example with better names:
+
+```html
+<div class="column-body is-scrollable"></div>
+```
+
+```css
+.is-scrollable {
+    overflow: auto;
+}
+
+.column-body {
+    background: #000;
+}
+```
+
+
+<a name="example"></a>
+## 6. Practical example
+
+An example of various conventions.
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Document</title>
+        <link rel="stylesheet" href="main.css">
+        <script src="main.js"></script>
+    </head>
+    <body>
+        <article class="post" id="1234">
+            <time class="timestamp">March 15, 2012</time>
+            <a data-id="1234"
+             data-analytics-category="[value]"
+             data-analytics-action="[value]"
+             href="[url]">[text]</a>
+            <ul>
+                <li>
+                    <a href="[url]">[text]</a>
+                    <img src="[url]" alt="[text]">
+                </li>
+                <li>
+                    <a href="[url]">[text]</a>
+                </li>
+            </ul>
+
+            <a class="link-complex" href="[url]">
+                <span class="link-complex__target">[text]</span>
+                [text]
+            </a>
+
+            <input value="text" readonly>
+        </article>
+    </body>
+</html>
+```
+
+
+<a name="license"></a>
+## License
+
+_Principles of writing consistent, idiomatic HTML_ by Nicolas Gallagher is
+licensed under the [Creative Commons Attribution 3.0 Unported
+License](http://creativecommons.org/licenses/by/3.0/). This applies to all
+documents and translations in this repository.
+
+Based on a work at
+[github.com/necolas/idiomatic-html](https://github.com/necolas/idiomatic-html).
